@@ -13,7 +13,7 @@ const Header = () => {
     return (
         <>
             <nav className="header">
-                <Link to="/" onClick={()=>setIsopen(false)}>Home</Link>
+                <Link to="/" onClick={()=>setIsopen(false)}>HOME</Link>
                 <Link to="/search" onClick={()=>setIsopen(false)}>
                     <FaSearch />
                 </Link>

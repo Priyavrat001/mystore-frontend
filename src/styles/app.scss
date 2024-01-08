@@ -39,6 +39,9 @@ body {
 
 @import "home";
 @import "cart";
+@import "shipping";
+@import "login";
+@import "search";
 
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
@@ -48,6 +51,24 @@ body {
 
 
 
+
+.orders-contain{
+  max-width: 1300px;
+  width: 100%;
+  margin: auto;
+  overflow: auto;
+  >h1{
+    @include heading;
+    margin: 1rem 0;
+    text-align: left;
+  }
+}
+
+.heading{
+  @include heading;
+  margin: 1rem 0;
+  text-align: center;
+}
 
 .header {
   padding: 1rem;
@@ -87,26 +108,6 @@ body {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

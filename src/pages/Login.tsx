@@ -20,13 +20,13 @@ const Login = () => {
             const {user} = await signInWithPopup(auth, provider);
 
             const res = await login({
-                name:"jaidev",
-                email:"afdf",
+                name:user.displayName!,
+                email:user.email!,
                 gender,
-                photo:"dfsdsf",
+                photo:user.photoURL!,
                 role:"user",
                 dob:date,
-                _id:"dffsd",
+                _id:user.uid,
 
             })
 
@@ -40,8 +40,6 @@ const Login = () => {
                 toast.error(message);
 
             }
-
-            console.log(user)
             
         } catch (error) {
             toast.error("Sign in failed")
@@ -57,7 +55,7 @@ const Login = () => {
         <h1 className="happy">Login</h1>
         <div>
             <label >Gender</label>
-            <select value={gender} onChange={(e)=> setGender(e.target.value)}>
+            <select value={gender} onChange={(e)=> setGender(e.target.value)} required>
                 <option value="">Select Gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -67,7 +65,7 @@ const Login = () => {
 
         <div>
             <label >Date Of Birth</label>
-            <input type="date" value={date} onChange={(e)=> setDate(e.target.value)}/>
+            <input type="date" value={date} onChange={(e)=> setDate(e.target.value)} required/>
         </div>
         <div>
             <p>Already Signed In Once</p>

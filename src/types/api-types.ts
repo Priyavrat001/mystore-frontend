@@ -1,5 +1,13 @@
 import { Product, User } from "./types";
 
+export type CoustomError={
+    status:number;
+    data:{
+        message:string;
+        success:boolean;
+    };
+}
+
 export type MessageResponse = {
     success:boolean;
     message:string;
@@ -15,4 +23,24 @@ export type UserResponse = {
 export type AllProductResponse = {
     success:boolean;
     products:Product[];
+}
+
+
+export type CategoriesResponse = {
+    success:boolean;
+    category:string[];
+}
+
+export type SearchProductResponse = {
+    success:boolean;
+    products:Product[];
+    totalPage:number;
+}
+
+export type SearchProductRequest = {
+    price:number;
+    page:number;
+    category:string;
+    search:string;
+    sort:string;
 }

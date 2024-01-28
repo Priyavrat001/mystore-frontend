@@ -101,35 +101,107 @@ const App = () => {
           </Route>
           {/* Admin Routes */}
           <Route
-            element={
-              <ProtectedRoute
-                isAuthenticated={true}
-                adminOnly={true}
-                admin={user?.role === "admin" ? true : false}
-              />
-            }
+            // element={
+            //   <ProtectedRoute
+            //     isAuthenticated={true}
+            //     adminOnly={true}
+            //     admin={user?.role === "admin" ? true : false}
+            //   />
+            // }
           >
-            <Route path="/admin/dashboard" element={<Dashboard />} />
-            <Route path="/admin/product" element={<Products />} />
-            <Route path="/admin/customer" element={<Customers />} />
-            <Route path="/admin/transaction" element={<Transaction />} />
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                <Dashboard />
+
+              </ProtectedRoute>
+
+            } />
+            <Route path="/admin/product" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                <Products />
+
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/customer" element={
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+                <Customers />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/transaction" element={
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+                <Transaction />
+              </ProtectedRoute>
+            } />
             {/* Charts */}
-            <Route path="/admin/chart/bar" element={<Barcharts />} />
-            <Route path="/admin/chart/pie" element={<Piecharts />} />
-            <Route path="/admin/chart/line" element={<Linecharts />} />
+            <Route path="/admin/chart/bar" element={
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+                <Barcharts />
+              </ProtectedRoute>
+
+            } />
+            <Route path="/admin/chart/pie" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+                <Piecharts />
+              </ProtectedRoute>} />
+            <Route path="/admin/chart/line" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+                <Linecharts />
+              </ProtectedRoute>
+            } />
             {/* Apps */}
-            <Route path="/admin/app/coupon" element={<Coupon />} />
-            <Route path="/admin/app/stopwatch" element={<Stopwatch />} />
-            <Route path="/admin/app/toss" element={<Toss />} />
+            <Route path="/admin/app/coupon" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+                <Coupon />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/app/stopwatch" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                <Stopwatch />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/app/toss" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                <Toss />
+              </ProtectedRoute>
+            } />
 
             {/* Management */}
-            <Route path="/admin/product/new" element={<NewProduct />} />
+            <Route path="/admin/product/new" element={
 
-            <Route path="/admin/product/:id" element={<ProductManagement />} />
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                <NewProduct />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/product/:id" element={
+
+              <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                <ProductManagement />
+
+              </ProtectedRoute>} />
 
             <Route
               path="/admin/transaction/:id"
-              element={<TransactionManagement />}
+              element={
+
+                <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
+
+                  <TransactionManagement />
+                </ProtectedRoute>
+              }
             />
           </Route>
         </Routes>

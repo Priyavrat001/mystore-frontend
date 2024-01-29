@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { AllProductResponse, CategoriesResponse, SearchProductRequest, SearchProductResponse } from "../../types/api-types";
+import { AllProductResponse, CategoriesResponse, MessageResponse, NewProductRequest, SearchProductRequest, SearchProductResponse } from "../../types/api-types";
+import { key } from "../../utils/server";
 
 
-const key = "http://localhost:4000"
 
 export const productApi = createApi({
     reducerPath: "productApi",
@@ -10,32 +10,49 @@ export const productApi = createApi({
     tagTypes: ["product"],
     endpoints: (builder) => ({
 
-        latestProduct:builder.query<AllProductResponse, string>({query:()=>"letest",
-    }),
+        latestProduct: builder.query<AllProductResponse, string>({
+            query: () => "letest",
+            // providesTags:["product"]
+        }),
 
-        allProducts:builder.query<AllProductResponse, string>({query:(id)=>`admin-product?id=${id}`,
-    }),
-        categories:builder.query<CategoriesResponse, string>({query:()=>`category`,
-    }),
+        allProducts: builder.query<AllProductResponse, string>({
+            query: (id) => `admin-product?id=${id}`,
+            // providesTags:["product"]
+        }),
+        categories: builder.query<CategoriesResponse, string>({
+            query: () => `category`,
+            // providesTags:["product"]
+        }),
 
-    searchProducts:builder.query<SearchProductResponse, SearchProductRequest>({query:({ price, sort, search, category, page})=>{
+        searchProducts: builder.query<SearchProductResponse, SearchProductRequest>({
+            query: ({ price, sort, search, category, page }) => {
 
-        let base = `all?search${search}&page${page}`
+                let base = `all?search=${search}&page=${page}`
 
-        if(price){
-            base+= `&price=${price}`
-        }
-        if(category){
-            base+= `&category=${category}`
-        }
-        if(sort){
-            base+= `&sort=${sort}`
-        }
+                if (price) {
+                    base += `&price=${price}`
+                }
+                if (category) {
+                    base += `&category=${category}`
+                }
+                if (sort) {
+                    base += `&sort=${sort}`
+                }
 
-        return base;
-    },
-}),
-        
+                return base;
+            },
+            // providesTags:["product"]
+        }),
+
+        newProducts: builder.mutation<MessageResponse, NewProductRequest>({
+            query: ({ formData, id }) => ({
+                url: `new?id=${id}`,
+                method: "POST",
+                body: formData
+            }),
+            // // invalidatesTags:["product"]
+        }),
+
     }),
 
 });
@@ -44,6 +61,7 @@ export const {
     useLatestProductQuery,
     useAllProductsQuery,
     useCategoriesQuery,
-    useSearchProductsQuery
+    useSearchProductsQuery,
+    useNewProductsMutation
 
 } = productApi;

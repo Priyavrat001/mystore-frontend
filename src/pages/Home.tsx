@@ -11,9 +11,9 @@ const Home = () => {
   const { data, isLoading, isError } = useLatestProductQuery("");
 
   const dispatch = useDispatch();
-  
+
   const addToCartHandler = () => {
-  console.log("handle")
+    console.log("handle")
   };
 
   if (isError) toast.error("Not Able Fetch the Products");
@@ -31,9 +31,9 @@ const Home = () => {
 
       <main>
         {isLoading ? (
-         <SkeletonLoader width="80vw"/>
+          <SkeletonLoader width="80vw" />
         ) : (
-          data && data?.products.map((i) => (
+          data?.products.map((i) => (
             <ProductCard
               key={i._id}
               productId={i._id}
@@ -41,7 +41,7 @@ const Home = () => {
               price={i.price}
               stock={i.stock}
               handler={addToCartHandler}
-              image="https://www.apple.com/newsroom/images/product/mac/standard/Apple-MacBook-Pro-M2-Pro-and-M2-Max-hero-230117.jpg.og.jpg?202310101605"
+              image={i.photo}
             />
           ))
         )}

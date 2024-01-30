@@ -1,5 +1,6 @@
 import { FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { key } from "../utils/server";
 
 
 
@@ -9,11 +10,11 @@ type CartItemsProps = {
 
 
 const CartItems = ({cartItem}: CartItemsProps) => {
-  const {image, productId, name, price, quantity} = cartItem;
+  const {photo, productId, name, price, quantity} = cartItem;
   return (
     <>
     <div className="cartItem">
-      <img src={image} alt="" />
+      <img src={`${key}/${photo}`} alt="" />
       <article>
 
       <Link to={`/product/${productId}`}>

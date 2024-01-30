@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { useLatestProductQuery } from "../redux/api/productApi";
 import SkeletonLoader from "../components/SkeletonLoader";
-// import { addToCart } from "../redux/reducer/cartReducer";
+import { CartItem } from "../types/types";
+import { addTOCart } from "../redux/reducer/cartRuducer";
 // import { CartItem } from "../types/types";
 
 const Home = () => {
@@ -12,8 +13,13 @@ const Home = () => {
 
   const dispatch = useDispatch();
 
-  const addToCartHandler = () => {
-    console.log("handle")
+  const addToCartHandler = (cartItem:CartItem) => {
+
+    if(cartItem.stock < 1) toast.error("Item is out of stock");
+
+    dispatch(addTOCart(cartItem))
+
+    console.log(cartItem)
   };
 
   if (isError) toast.error("Not Able Fetch the Products");
@@ -30,21 +36,12 @@ const Home = () => {
       </h1>
 
       <main>
-        {isLoading ? (
-          <SkeletonLoader width="80vw" />
-        ) : (
-          data?.products.map((i) => (
-            <ProductCard
-              key={i._id}
-              productId={i._id}
-              name={i.name}
-              price={i.price}
-              stock={i.stock}
-              handler={addToCartHandler}
-              image={i.photo}
-            />
+        {isLoading ? <SkeletonLoader width="80vw" />: (
+          data?.products.map((i)=>(
+            <ProductCard key={i._id} name={i.name} image={i.photo} price={i.price} stock={i.stock} handler={addToCartHandler} productId={i._id}/>
           ))
-        )}
+        )
+          }
       </main>
     </div>
   );

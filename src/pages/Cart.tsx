@@ -2,30 +2,83 @@ import { useState, useEffect } from "react";
 import { VscError } from "react-icons/vsc"
 import CartItems from "../components/CartItems";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CartReducerInitialState } from "../types/reducer-types";
+import { CartItem } from "../types/types";
+import { addTOCart, calculatePrice, discountApplied, removeCartItem } from "../redux/reducer/cartRuducer";
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import { key } from "../utils/server";
 
 
 const Cart = () => {
 
-const {cartItems, subtotal, tax, total, shippingCharges, discount} = useSelector((state:{
-  cartReducer:CartReducerInitialState
-})=>state.cartReducer);
+  const { cartItems, subtotal, tax, total, shippingCharges, discount } = useSelector((state: {
+    cartReducer: CartReducerInitialState
+  }) => state.cartReducer);
 
-  const [cuponCode, setCuponCode] = useState("");
-  const [IsvalidcuponCode, setIsvalidCuponCode] = useState(false);
+  const dispatch = useDispatch();
+
+  const [couponeCode, setCouponeCode] = useState("");
+  const [IsvalidcouponeCode, setIsvalidCouponeCode] = useState(false);
+
+
+  const incrementCartHandler = (cartItem: CartItem) => {
+
+    if (cartItem.quantity >= cartItem.stock) return toast.error("Max quantity reached");
+
+    dispatch(addTOCart({ ...cartItem, quantity: cartItem.quantity + 1 }))
+
+    console.log(cartItem)
+  };
+
+  const decrementCartHandler = (cartItem: CartItem) => {
+
+    if (cartItem.quantity <= 1) return toast.error("Product quantity can not be less than one");
+
+    dispatch(addTOCart({ ...cartItem, quantity: cartItem.quantity - 1 }))
+  };
+
+  const removeHandler = (productId: string) => {
+
+    // if(cartItem.stock < 1) 
+
+    dispatch(removeCartItem(productId));
+  };
 
   useEffect(() => {
+
+    const {token, cancel} = axios.CancelToken.source()
+
     const timeOutID = setTimeout(() => {
-      if (Math.random() > 0.5) setIsvalidCuponCode(true);
-      else setIsvalidCuponCode(false);
+
+      axios.get(`${key}/api/v1/payment/discount?coupon=${couponeCode}`,{cancelToken:token}).then((res)=>{
+
+        dispatch(discountApplied(res.data.discount));
+        console.log(res.data)
+        setIsvalidCouponeCode(true)
+        dispatch(calculatePrice());
+      }).catch(()=>{
+        dispatch(discountApplied(0));
+        setIsvalidCouponeCode(false);
+        dispatch(calculatePrice());
+      })
+      
     }, 1000);
 
     return () => {
       clearTimeout(timeOutID);
-      setIsvalidCuponCode(false);
+      cancel();
+      setIsvalidCouponeCode(false);
     }
-  }, [cuponCode])
+  }, [couponeCode])
+
+  useEffect(() => {
+
+    dispatch(calculatePrice());
+    
+  }, [cartItems])
+
 
 
   return (
@@ -33,9 +86,9 @@ const {cartItems, subtotal, tax, total, shippingCharges, discount} = useSelector
       <div className="cart">
         <main>
           {
-         cartItems.length>0 ?    cartItems.map((i, index) => (
-          <CartItems key={index} cartItem={i} />
-        )) : <h1>No items added</h1>
+            cartItems.length > 0 ? cartItems.map((i, index) => (
+              <CartItems incrementCartHandler={incrementCartHandler} dcrementCartHandler={decrementCartHandler} removeHandler={removeHandler} key={index} cartItem={i} />
+            )) : <h1>No items added</h1>
           }
 
         </main>
@@ -52,11 +105,11 @@ const {cartItems, subtotal, tax, total, shippingCharges, discount} = useSelector
           </p>
           <p><b>Total: ₹{total}</b></p>
 
-          <input type="text" value={cuponCode} onChange={e => setCuponCode(e.target.value)} placeholder="Cupon Code" />
+          <input type="text" value={couponeCode} onChange={e => setCouponeCode(e.target.value)} placeholder="Cupon Code" />
 
 
-          {cuponCode &&
-            (IsvalidcuponCode ? (<span className="green">₹{discount} off using <code>{cuponCode}</code></span>)
+          {couponeCode &&
+            (IsvalidcouponeCode ? (<span className="green">₹{discount} off using <code>{couponeCode}</code></span>)
               : (<span className="red">Invlaid cupone <VscError /></span>))
           }
 

@@ -1,8 +1,11 @@
 import { FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-import { OrderItem } from "../../../models/types";
-import {useState} from "react"
+import { OrderItem } from "../../../types/types";
+import { useState } from "react"
+import { useSelector } from "react-redux"
+import { UserReducerInitialState } from "../../../types/reducer-types";
+import { useAllProductsQuery } from "../../../redux/api/productApi";
 
 const img =
   "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
@@ -17,7 +20,14 @@ const orderItems: OrderItem[] = [
   },
 ];
 
+
 const TransactionManagement = () => {
+
+  const {} = useAllProductsQuery()
+
+  const { user} = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer)
+
+
   const [order, setOrder] = useState({
     name: "Puma Shoes",
     address: "77 black street",
@@ -105,8 +115,8 @@ const TransactionManagement = () => {
                 status === "Delivered"
                   ? "purple"
                   : status === "Shipped"
-                  ? "green"
-                  : "red"
+                    ? "green"
+                    : "red"
               }
             >
               {status}

@@ -1,18 +1,24 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import TableHOC from "../components/admin/TableHOC"
 import { Column } from "react-table";
 import { Link } from "react-router-dom";
+import { UserReducerInitialState } from "../types/reducer-types";
+import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { CoustomError } from "../types/api-types";
+import SkeletonLoader from "../components/SkeletonLoader";
+import { useMyOrdersQuery } from "../redux/api/orderApi";
 
-type DataRype = {
+type DataType = {
     _id: string;
     amount: number;
-    quantity: number;
     discount: number;
+    quantity: number;
     status: ReactElement;
     action: ReactElement;
 }
 
-const column: Column<DataRype>[] = [
+const column: Column<DataType>[] = [
     {
         Header: "ID",
         accessor: "_id",
@@ -37,26 +43,49 @@ const column: Column<DataRype>[] = [
         Header: "Action",
         accessor: "action",
     },
-]
+];
+
 
 const Orders = () => {
-    const [rows, setRows] = useState<DataRype[]>([
-        {
-           _id:"dffdsfs",
-            amount: 4555,
-            quantity: 50,
-            discount: 200,
-            status: <span className="red">Processing</span>,
-            action: <Link to={`/orders/${"dffdsfs"}`}>View</Link>,
-        }
-    ]);
 
-    const Table = TableHOC<DataRype>(column, rows, "dashboard-product-box", "Orders", rows.length > 6)();
+    const { user } = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer);
+
+    const { isLoading, data, error, isError } = useMyOrdersQuery(user?._id!);
+
+    const [rows, setRows] = useState<DataType[]>([]);
+
+
+    if (isError) return toast.error((error as CoustomError).data.message);
+    useEffect(() => {
+        if (data)
+            setRows(
+                data.orders.map((i) => ({
+                    _id: i._id,
+                    amount: i.total,
+                    discount: i.discount,
+                    quantity: i.orderItems.length,
+                    status: (
+                        <span
+                            className={i.status === "Processing" ? "red" :
+                                i.status === "Shipped" ? "green" : "purple"
+                            }
+                        >
+                            {i.status}
+                        </span>
+                    ),
+                    action: <Link to={`/admin/transaction/${i._id}`}>Manage</Link>,
+                }))
+            );
+    }, [data]);
+
+
+
+    const Table = TableHOC<DataType>(column, rows, "dashboard-product-box", "Orders", rows.length > 6)();
     return (
         <>
             <div className="orders-contain">
                 <h1>My orders</h1>
-                {Table}
+                {isLoading ? <SkeletonLoader length={10} /> : Table}
             </div>
         </>
     )

@@ -1,63 +1,59 @@
 import { FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-import { OrderItem } from "../../../types/types";
 import { useState } from "react"
-import { useSelector } from "react-redux"
+import { key } from "../../../utils/server";
+import { Order, OrderItem } from "../../../types/types";
+import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../../../types/reducer-types";
-import { useAllProductsQuery } from "../../../redux/api/productApi";
+import { useOrderDetailsQuery } from "../../../redux/api/orderApi";
+import SkeletonLoader from "../../../components/SkeletonLoader";
 
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
 
-const orderItems: OrderItem[] = [
-  {
-    name: "Puma Shoes",
-    photo: img,
-    id: "asdsaasdas",
-    quantity: 4,
-    price: 2000,
+const defaultData: Order = {
+  shippingInfo: {
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    pinCode: ""
   },
-];
-
-
+  status: "",
+  subtotal: 0,
+  discount: 0,
+  shippingCharges: 0,
+  tax: 0,
+  total: 0,
+  orderItems: [],
+  user: { name: "", _id: "" },
+  _id: "",
+};
 const TransactionManagement = () => {
 
-  const {} = useAllProductsQuery()
+  const { user } = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer);
 
-  const { user} = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer)
+  const parmas = useParams();
+  const navigate = useNavigate();
+
+  const { data, isLoading, isError } = useOrderDetailsQuery(parmas.id!);
+
+  const {
+    shippingInfo: { address, city, state, country, pinCode },
+    orderItems,
+    user: { name },
+    status,
+    tax,
+    subtotal,
+    total,
+    discount,
+    shippingCharges,
+  } = data?.order || defaultData;
+
 
 
   const [order, setOrder] = useState({
-    name: "Puma Shoes",
-    address: "77 black street",
-    city: "Neyword",
-    state: "Nevada",
-    country: "US",
-    pinCode: 242433,
-    status: "Processing",
-    subtotal: 4000,
-    discount: 1200,
-    shippingCharges: 0,
-    tax: 200,
-    total: 4000 + 200 + 0 - 1200,
-    orderItems,
+    
   });
-
-  const {
-    name,
-    address,
-    city,
-    country,
-    state,
-    pinCode,
-    subtotal,
-    shippingCharges,
-    tax,
-    discount,
-    total,
-    status,
-  } = order;
 
   const updateHandler = (): void => {
     setOrder((prev) => ({
@@ -66,11 +62,19 @@ const TransactionManagement = () => {
     }));
   };
 
+  const deleteHandler = () => {
+
+  }
+
+  if (isError) return <Navigate to={"/404"} />
+
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="product-management">
-        <section
+        {
+          isLoading?<SkeletonLoader/>:<>
+          <section
           style={{
             padding: "2rem",
           }}
@@ -81,7 +85,7 @@ const TransactionManagement = () => {
             <ProductCard
               key={i._id}
               name={i.name}
-              photo={`${server}/${i.photo}`}
+              photo={i.photo}
               productId={i.productId}
               _id={i._id}
               quantity={i.quantity}
@@ -126,6 +130,8 @@ const TransactionManagement = () => {
             Process Status
           </button>
         </article>
+          </>
+        }
       </main>
     </div>
   );
@@ -139,7 +145,7 @@ const ProductCard = ({
   productId,
 }: OrderItem) => (
   <div className="transaction-product-card">
-    <img src={photo} alt={name} />
+    <img src={`${key}/${photo}`} alt={name} />
     <Link to={`/product/${productId}`}>{name}</Link>
     <span>
       ₹{price} X {quantity} = ₹{price * quantity}

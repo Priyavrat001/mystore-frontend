@@ -17,6 +17,8 @@ const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
 const Orders = lazy(() => import("./pages/Orders"));
 const OrderDetails = lazy(() => import("./pages/OrderDetails"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const CheckOut = lazy(() => import("./pages/CheckOut"));
 
 // Admin routes importing
 
@@ -98,16 +100,22 @@ const App = () => {
                 <OrderDetails />
               </ProtectedRoute>
             } />
+
+            <Route path="/pay" element={
+              <ProtectedRoute isAuthenticated={user ? true : false}>
+                <CheckOut />
+              </ProtectedRoute>
+            } />
           </Route>
           {/* Admin Routes */}
           <Route
-            // element={
-            //   <ProtectedRoute
-            //     isAuthenticated={true}
-            //     adminOnly={true}
-            //     admin={user?.role === "admin" ? true : false}
-            //   />
-            // }
+          // element={
+          //   <ProtectedRoute
+          //     isAuthenticated={true}
+          //     adminOnly={true}
+          //     admin={user?.role === "admin" ? true : false}
+          //   />
+          // }
           >
             <Route path="/admin/dashboard" element={
               <ProtectedRoute isAuthenticated={true} adminOnly={true} admin={user?.role === "admin" ? true : false}>
@@ -204,6 +212,7 @@ const App = () => {
               }
             />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />

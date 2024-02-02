@@ -1,13 +1,13 @@
 import { FaTrash } from "react-icons/fa";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-import { useState } from "react"
 import { key } from "../../../utils/server";
 import { Order, OrderItem } from "../../../types/types";
 import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../../../types/reducer-types";
-import { useOrderDetailsQuery } from "../../../redux/api/orderApi";
+import { useDeleteOrderMutation, useOrderDetailsQuery, useUpdateOrderMutation } from "../../../redux/api/orderApi";
 import SkeletonLoader from "../../../components/SkeletonLoader";
+import { responseToast } from "../../../utils/features";
 
 
 const defaultData: Order = {
@@ -49,21 +49,23 @@ const TransactionManagement = () => {
     shippingCharges,
   } = data?.order || defaultData;
 
+  const [updateOrder] = useUpdateOrderMutation();
+  const [deleteOrder] = useDeleteOrderMutation();
 
-
-  const [order, setOrder] = useState({
-    
-  });
-
-  const updateHandler = (): void => {
-    setOrder((prev) => ({
-      ...prev,
-      status: "Shipped",
-    }));
+  const updateHandler = async()=> {
+    const res = await updateOrder({
+      userId:user?._id!,
+      orderId: data?.order._id!
+    });
+    responseToast(res, navigate, "/admin/transaction");
   };
 
-  const deleteHandler = () => {
-
+  const deleteHandler = async() => {
+    const res = await deleteOrder({
+      userId:user?._id!,
+      orderId: data?.order._id!
+    });
+    responseToast(res, navigate, "/admin/transaction");
   }
 
   if (isError) return <Navigate to={"/404"} />

@@ -22,6 +22,7 @@ a {
 body {
   user-select: none;
 }
+
 .red {
   color: red;
 }
@@ -52,19 +53,20 @@ body {
 
 
 
-.orders-contain{
+.orders-contain {
   max-width: 1300px;
   width: 100%;
   margin: auto;
   overflow: auto;
-  >h1{
+
+  >h1 {
     @include heading;
     margin: 1rem 0;
     text-align: left;
   }
 }
 
-.heading{
+.heading {
   @include heading;
   margin: 1rem 0;
   text-align: center;
@@ -103,7 +105,8 @@ body {
     position: absolute;
     left: calc(100% - 100px);
     top: 8%;
-    > div{
+
+    >div {
       @include flex(column, flex-start, center, 00.25rem);
     }
   }
@@ -111,6 +114,29 @@ body {
 
 
 
+.not-found {
+  height: 80vh;
+  @include flex(column);
+
+  >svg {
+    font-size: 4rem
+  }
+}
+
+.checkout-container {
+  max-width: 400px;
+  width: 100%;
+  margin: auto;
+  > form {
+    @include flex(column, flex-start, stretch, 2rem);
+
+    button {
+      @include btn(1rem, $color3, $color1);
+      width: 100%;
+      font-size: 1.1rem;
+    }
+  }
+}
 
 .admin-container {
   @include grid(1fr 4fr, 2rem);
@@ -289,11 +315,12 @@ body {
   }
 }
 
-.skeleton-loader{
+.skeleton-loader {
   display: flex;
   flex-direction: column;
 }
-.skeleton-shape{
+
+.skeleton-shape {
   height: 30px;
   width: 100%;
   background-color: #ddd;
@@ -315,13 +342,15 @@ body {
 }
 
 @keyframes skeleton-loading {
-  0%{
+  0% {
     opacity: 0.5;
   }
-  50%{
+
+  50% {
     opacity: 1;
   }
-  100%{
+
+  100% {
     opacity: 0.6;
   }
 }

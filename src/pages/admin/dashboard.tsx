@@ -6,19 +6,37 @@ import { HiTrendingDown, HiTrendingUp } from "react-icons/hi";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import { BarChart, DoughnutChart } from "../../components/admin/Charts";
 import Table from "../../components/admin/DashboardTable";
-import Loader from "../../components/admin/Loader";
-import data from "../../assets/data.json"
+import { useStatsQuery } from "../../redux/api/dashboardApi";
+import {useSelector} from "react-redux"
+import { RootState } from "../../redux/store";
+import { CoustomError } from "../../types/api-types";
+import SkeletonLoader from "../../components/SkeletonLoader";
 
 
 const userImg =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp";
 
 const Dashboard = () => {
+
+  const {user} = useSelector((state:RootState)=>state.userReducer);
+
+  const {isLoading, data, error, isError} = useStatsQuery(user?._id!);
+
+  const stats = data?.stats!;
+
+  console.log(data)
+
+  if(isError){
+    toast((error as CoustomError).data.message);
+  }
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="dashboard">
-        <div className="bar">
+       {
+        isLoading?<SkeletonLoader length={20}/>:(
+          <>
+           <div className="bar">
           <BsSearch />
           <input type="text" placeholder="Search for data, users, docs" />
           <FaRegBell />
@@ -29,26 +47,26 @@ const Dashboard = () => {
           <WidgetItem
             percent={40}
             amount={true}
-            value={340000}
+            value={stats.count.revenue}
             heading="Revenue"
             color="rgb(0, 115, 255)"
           />
           <WidgetItem
             percent={-14}
-            value={400}
+            value={stats.count.user}
             color="rgb(0 198 202)"
             heading="Users"
           />
           <WidgetItem
             percent={80}
-            value={23000}
+            value={stats.count.order}
             color="rgb(255 196 0)"
             heading="Transactions"
           />
 
           <WidgetItem
             percent={30}
-            value={1000}
+            value={stats.count.product}
             color="rgb(76 0 255)"
             heading="Products"
           />
@@ -71,14 +89,19 @@ const Dashboard = () => {
             <h2>Inventory</h2>
 
             <div>
-              {data.categories.map((i) => (
-                <CategoryItem
-                  key={i.heading}
-                  value={i.value}
-                  heading={i.heading}
-                  color={`hsl(${i.value * 4}, ${i.value}%, 50%)`}
-                />
-              ))}
+              {stats.categoryCount.map((i) => {
+                
+                const [heading, value] = Object.entries(i)[0];
+
+                return (
+                  <CategoryItem
+                    key={heading}
+                    value={value}
+                    heading={heading}
+                    color={`hsl(${value * 4}, ${value}%, 50%)`}
+                  />
+                )
+              })}
             </div>
           </div>
         </section>
@@ -99,8 +122,11 @@ const Dashboard = () => {
               <BiMaleFemale />
             </p>
           </div>
-          <Table data={data.transaction} />
+          {/* <Table  /> */}
         </section>
+          </>
+        )
+       }
       </main>
     </div>
   );

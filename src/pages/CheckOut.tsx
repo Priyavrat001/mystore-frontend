@@ -5,9 +5,11 @@ import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { NewOrdertRequest } from "../types/api-types";
-import {useSelector} from "react-redux";
-import { UserReducerInitialState } from "../types/reducer-types";
-// import { userReducer } from "../redux/reducer/userReducer";
+import {useDispatch, useSelector} from "react-redux";
+import { RootState } from "../redux/store";
+import { useNewOrderMutation } from "../redux/api/orderApi";
+import { responseToast } from "../utils/features";
+import { resetCart } from "../redux/reducer/cartRuducer";
 
 
 const stripePromise = loadStripe('pk_test_51OaIarSHqJlERpUxJ6WAwlJTGmyKh1WzUae0VfUE1I7FwDjLeEDCmx0lSMCzjIBkRyxJh2U7h5e1zcF4W8Mcc4tE00ub86qiIm');
@@ -21,9 +23,22 @@ const CheckoutForm = () => {
 
     const navigate = useNavigate();
 
-    // const { user, loading } = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer)
+    const dispatch = useDispatch();
+
+    const { user } = useSelector((state: RootState) => state.userReducer);
+
+  const {
+    shippingInfo,
+    cartItems,
+    subtotal,
+    tax,
+    discount,
+    shippingCharges,
+    total,
+  } = useSelector((state: RootState) => state.cartReducer);
 
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
+    const [newOrder] = useNewOrderMutation();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -31,7 +46,16 @@ const CheckoutForm = () => {
         if (!stripe || !elements) return;
         setIsProcessing(true);
 
-        const orderData: NewOrdertRequest = {};
+        const orderData: NewOrdertRequest = {
+            shippingInfo,
+            orderItems: cartItems,
+            subtotal,
+            tax,
+            discount,
+            shippingCharges,
+            total,
+            user: user?._id!,
+          };
 
         const { paymentIntent, error } = await stripe.confirmPayment({ elements, confirmParams: { return_url: window.location.origin }, redirect: "if_required" });
 
@@ -41,11 +65,12 @@ const CheckoutForm = () => {
         };
 
         if (paymentIntent.status === "succeeded") {
-            console.log("Placing order....");
-            navigate("/order");
-        }
-    }
-
+            const res = await newOrder(orderData);
+            dispatch(resetCart());
+            responseToast(res, navigate, "/orders");
+          }
+          setIsProcessing(false);
+        };
     return (
         <form onSubmit={handleSubmit} className="checkout-container">
             <PaymentElement />

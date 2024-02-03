@@ -1,70 +1,80 @@
-import { CartItem, Order, Product, ShippingInfo, User } from "./types";
+import { CartItem, Order, Product, ShippingInfo, Stats, User } from "./types";
 
-export type CoustomError={
-    status:number;
-    data:{
-        message:string;
-        success:boolean;
+export type CoustomError = {
+    status: number;
+    data: {
+        message: string;
+        success: boolean;
     };
-}
+};
 
 export type MessageResponse = {
-    success:boolean;
-    message:string;
-}
+    success: boolean;
+    message: string;
+};
+
+export type AllUsersResponse = {
+    success: boolean;
+    users: User;
+};
 
 
 export type UserResponse = {
-    success:boolean;
-    user:User;
-}
+    success: boolean;
+    user: User[];
+};
 
 
 export type AllProductResponse = {
-    success:boolean;
-    products:Product[];
-}
+    success: boolean;
+    products: Product[];
+};
 
 
 export type CategoriesResponse = {
-    success:boolean;
-    category:string[];
-}
+    success: boolean;
+    category: string[];
+};
 
 export type SearchProductResponse = {
-    success:boolean;
-    products:Product[];
-    totalPage:number;
-}
+    success: boolean;
+    products: Product[];
+    totalPage: number;
+};
+export type StatsResponse = {
+    success: boolean;
+    stats: Stats;
+    totalPage: number;
+};
 
 export type SearchProductRequest = {
-    price:number;
-    page:number;
-    category:string;
-    search:string;
-    sort:string;
-}
+    price: number;
+    page: number;
+    category: string;
+    search: string;
+    sort: string;
+};
 
 export type ProductResponse = {
-    success:boolean;
-    product:Product;
-}
+    success: boolean;
+    product: Product;
+};
 
 export type NewProductRequest = {
-    id:string;
-    formData:FormData;
-}
+    id: string;
+    formData: FormData;
+};
 
 export type UpdateProductRequest = {
-    userId:string;
-    productId:string;
-    formData:FormData;
-}
+    userId: string;
+    productId: string;
+    formData: FormData;
+};
 
 export type DeleteProductRequest = {
-    userId:string;
-    productId:string;
-}
+    userId: string;
+    productId: string;
+};
 
 export type NewOrdertRequest = {
     shippingInfo: ShippingInfo;
@@ -74,20 +84,25 @@ export type NewOrdertRequest = {
     shippingCharges: number;
     discount: number;
     total: number;
-    user:string;
-}
+    user: string;
+};
 
 export type UpdateOrdertRequest = {
-    userId:string;
-    orderId:string;
-}
+    userId: string;
+    orderId: string;
+};
 
 export type AllOrdersResponse = {
-    success:boolean;
-    orders:Order[];
-}
+    success: boolean;
+    orders: Order[];
+};
 
 export type OrderDetailsResponse = {
-    success:boolean;
-    order:Order;
-}
+    success: boolean;
+    order: Order;
+};
+
+export type DeleteUserRequest = {
+    userId: string;
+    adminId: string;
+};

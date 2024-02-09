@@ -44,6 +44,7 @@ const TransactionManagement = lazy(
 const App = () => {
 
   const { user, loading } = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer)
+  console.log(user)
 
   const dispatch = useDispatch()
 
@@ -53,6 +54,7 @@ const App = () => {
         const data = await getUser(user.uid);
 
         dispatch(userExist(data.user));
+        console.log("data", data)
 
       }
       else {

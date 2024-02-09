@@ -32,7 +32,7 @@ const columns: Column<DataType>[] = [
   },
 ];
 
-const DashboardTable = ({ data = [] }: { data: DataType[] }) => {
+const DashboardTable = ({ data = [] }: { data: [] }) => {
   return TableHOC<DataType>(
     columns,
     data,

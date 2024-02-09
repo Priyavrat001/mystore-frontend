@@ -1,1 +1,5 @@
-export const key = "http://localhost:4000"
+export const key = "https://mystore-backend-priyavrat001.onrender.com"
+
+
+
+//  "https://mystore-backend-priyavrat001.onrender.com"

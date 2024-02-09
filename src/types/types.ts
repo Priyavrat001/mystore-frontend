@@ -23,7 +23,7 @@ export type ShippingInfo = {
     state: string;
     country: string;
     pinCode: string;
-   
+
 }
 
 export type CartItem = {
@@ -33,25 +33,25 @@ export type CartItem = {
     price: number;
     quantity: number;
     stock: number;
-   
+
 }
 
 export type OrderItem = Omit<CartItem, "stock"> & { _id: string };
 
 export type Order = {
     orderItems: OrderItem[];
-    shippingInfo:ShippingInfo;
+    shippingInfo: ShippingInfo;
     subtotal: number;
     tax: number;
     shippingCharges: number;
     discount: number;
     total: number;
-    status:string;
-    user:{
-        name:string;
-        _id:string;
+    status: string;
+    user: {
+        name: string;
+        _id: string;
     };
-    _id:string;
+    _id: string;
 }
 
 type CountAndChange = {
@@ -66,11 +66,11 @@ type Transactions = {
     amount: number;
     discount: number;
     quantity: number;
-    status:string;
+    status: string;
 }
 
 export type Stats = {
-    categoryCount:Record<string, number>[],
+    categoryCount: Record<string, number>[],
     changePercent: CountAndChange;
     count: CountAndChange;
     chart: {
@@ -82,4 +82,52 @@ export type Stats = {
         female: number;
     };
     letestTransactions: Transactions;
-}
+};
+
+type OrderFullfillment = {
+    processing: number;
+    shipped: number;
+    delivered: number;
+};
+
+type RevenueDistribution = {
+    netMargin: number;
+    discount: number;
+    productionCost: number;
+    burnt: number;
+    marketingCost: number;
+};
+
+
+type UsersAgeGroup = {
+    teen: number;
+    adult: number;
+    old: number;
+};
+
+export type Pie = {
+    orderFullfillment: OrderFullfillment;
+    productCategories: Record<string, number>[];
+    staockAvailablity: {
+        inStock: number;
+        outOfStock: number;
+    };
+    revenueDistribution: RevenueDistribution;
+    userAgeGroup: UsersAgeGroup;
+    adminCoustomer: {
+        admin: number;
+        customer: number;
+    };
+};
+
+export type Bar = {
+    users: number[];
+    products: number[];
+    orders: number[];
+};
+export type Line = {
+    users: number[];
+    products: number[];
+    discount: number[];
+    revenue: number[];
+};

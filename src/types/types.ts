@@ -61,13 +61,15 @@ type CountAndChange = {
     order: number;
 }
 
-type Transactions = {
+type Transactions = [{
+
     _id: string;
     amount: number;
     discount: number;
     quantity: number;
     status: string;
 }
+]
 
 export type Stats = {
     categoryCount: Record<string, number>[],

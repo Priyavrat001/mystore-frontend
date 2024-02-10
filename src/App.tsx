@@ -44,7 +44,6 @@ const TransactionManagement = lazy(
 const App = () => {
 
   const { user, loading } = useSelector((state: { userReducer: UserReducerInitialState }) => state.userReducer)
-  console.log(user)
 
   const dispatch = useDispatch()
 

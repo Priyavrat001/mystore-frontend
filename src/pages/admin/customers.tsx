@@ -66,23 +66,32 @@ const Customers = () => {
      responseToast(res, null, "")
   }
 
-  useEffect(() => {
 
-    if (data){
-      setRows(data.users.map(i=>({
-        avatar: <img 
-        style={{borderRadius:"50%",}}
-        src={i.photo} 
-        alt={i.name}/>,
-        name: i.name,
-        gender: i.gender,
-        email: i.email,
-        role: i.role,
-        action:<button onClick={()=> deleteHandler(i._id)}><FaTrash/></button>
-      })))
-    }
-      
-  }, [data]);
+    useEffect(() => {
+      if (data)
+        setRows(
+          data.users.map((i) => ({
+            avatar: (
+              <img
+                style={{
+                  borderRadius: "50%",
+                }}
+                src={i.photo}
+                alt={i.name}
+              />
+            ),
+            name: i.name,
+            email: i.email,
+            gender: i.gender,
+            role: i.role,
+            action: (
+              <button onClick={() => deleteHandler(i._id)}>
+                <FaTrash />
+              </button>
+            ),
+          }))
+        );
+    }, [data]);
 
   const Table = TableHOC<DataType>(
     columns,
